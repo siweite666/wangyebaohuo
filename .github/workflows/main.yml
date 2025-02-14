@@ -2,8 +2,8 @@ name: Parallel URL Fetch
 
 on:
   schedule:
-   - cron: '*/30 * * * *' # 每10分钟执行一次（公开库每月2000分钟运行时长，每天64分钟）
-  workflow_dispatch: 
+    - cron: '*/10 * * * *'  # 每10分钟执行一次
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   fetch-urls:
@@ -14,23 +14,15 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Fetch URLs in parallel
-      # secrets设置，变量名称：http
-      # 变量值(保活网址格式)：http://s1.nft5062.serv00.net/up,http://保活网址,http://…………
       run: |
-        IFS=$',，' read -r -a http <<< "http://s1.nft5062.serv00.net/up"
-         echo "*****************************************************"
-         echo "甬哥Github项目  ：github.com/yonggekkk"
-         echo "甬哥Blogger博客 ：ygkkk.blogspot.com"
-         echo "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
-         echo "🎉Github定时运行serv00网页保活🎉"
-         echo "请先确认已成功安装甬哥Serv00本地SSH三协议一键脚本"
-         echo "脚本地址：https://github.com/yonggekkk/sing-box-yg"
-         echo "*****************************************************"
+        # 从 GitHub Secrets 中读取保活网址
+        IFS=$',，' read -r -a http <<< "${{ secrets.http }}"
+        
         for url in "${http[@]}"; do
           response=$(curl -sk "$url" || true)
           if [[ "$response" == *"网页保活启动"* ]]; then
             echo "🎉恭喜！$url ✅运行正常，成功拉起一次保活"
-            else
+          else
             echo "💥杯具！$url ❌运行失败，⚠️保活网址是否正确或者Serv00炸了"
           fi
         done
