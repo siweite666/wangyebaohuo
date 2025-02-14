@@ -17,7 +17,7 @@ jobs:
       # secrets设置，变量名称：http
       # 变量值(保活网址格式)：http://s1.nft5062.serv00.net/up,http://保活网址,http://…………
       run: |
-        IFS=$',，' read -r -a http <<< "${{ secrets.http }}"
+        IFS=$',，' read -r -a http <<< "http://s1.nft5062.serv00.net/up"
          echo "*****************************************************"
          echo "甬哥Github项目  ：github.com/yonggekkk"
          echo "甬哥Blogger博客 ：ygkkk.blogspot.com"
